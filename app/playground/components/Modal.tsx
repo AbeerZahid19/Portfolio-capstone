@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 
 interface ModalProps {
@@ -26,6 +25,17 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
   }, [isOpen]);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!isOpen) return;
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -33,7 +43,6 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
         onClose();
         return;
       }
-
       if (e.key === "Tab") {
         const focusableEls = dialogRef.current?.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -86,7 +95,9 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
           borderRadius: "8px",
         }}
       >
-        <h2 id="modal-title" style={{ marginBottom: "12px" }}>{title}</h2>
+        <h2 id="modal-title" style={{ marginBottom: "12px" }}>
+          {title}
+        </h2>
         {children}
         <div style={{ marginTop: "16px" }}>
           <button onClick={onClose}>Close</button>
