@@ -3,6 +3,50 @@
 import { useChat } from "@ai-sdk/react";
 import { useState, useRef, useEffect } from "react";
 
+function ToolPart({ part }: { part: any }) {
+   
+
+  if (part.type !== "tool-fetchMetaTags") return null;
+
+  if (part.state === "input-streaming") {
+    return (
+      <div className="text-sm text-gray-500 italic border rounded p-2 my-1">
+        Preparing to check a website...
+      </div>
+    );
+  }
+
+  if (part.state === "input-available") {
+    return (
+      <div className="text-sm text-blue-600 border rounded p-2 my-1">
+        🔍 Checking website: {part.input?.url}
+      </div>
+    );
+  }
+
+  if (part.state === "output-available") {
+    const output = part.output;
+    return (
+      <div className="border rounded-lg p-3 my-1 bg-green-50">
+        <p className="font-semibold text-sm">Website Info</p>
+        <p className="text-xs text-gray-500 break-all">{output.url}</p>
+        <p className="mt-1"><strong>Title:</strong> {output.title || "Not found"}</p>
+        <p><strong>Description:</strong> {output.description || "Not found"}</p>
+      </div>
+    );
+  }
+
+  if (part.state === "output-error") {
+    return (
+      <div className="border rounded-lg p-3 my-1 bg-red-50 text-red-700">
+        ⚠️ Couldn't check that website: {part.errorText}
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export default function ChatPage() {
   const { messages, sendMessage, status, stop } = useChat();
   const [input, setInput] = useState("");
@@ -44,19 +88,25 @@ export default function ChatPage() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"}`}
           >
-            <div
-              className={`rounded-lg px-3 py-2 max-w-[80%] ${
-                message.role === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-black"
-              }`}
-            >
-              {message.parts.map((part, i) =>
-                part.type === "text" ? <span key={i}>{part.text}</span> : null
-              )}
-            </div>
+            {message.parts.map((part, i) => {
+              if (part.type === "text") {
+                return (
+                  <div
+                    key={i}
+                    className={`rounded-lg px-3 py-2 max-w-[80%] ${
+                      message.role === "user"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-black"
+                    }`}
+                  >
+                    {part.text}
+                  </div>
+                );
+              }
+              return <ToolPart key={i} part={part} />;
+            })}
           </div>
         ))}
 
