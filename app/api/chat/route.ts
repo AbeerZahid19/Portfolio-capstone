@@ -1,4 +1,4 @@
-import { groq } from '@ai-sdk/groq';
+ import { groq } from '@ai-sdk/groq';
 import { streamText, stepCountIs, type UIMessage } from 'ai';
 import { fetchMetaTags } from './tools';
 
@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       .map((p) => p.text)
       .join(''),
   }));
+
 
   const result = streamText({
     model: MODEL,
