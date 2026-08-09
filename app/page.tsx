@@ -3,7 +3,14 @@ export default function Home() {
     <div className="flex flex-col flex-1 items-center justify-center px-6 py-24 text-center">
       <div className="max-w-2xl">
         <h1 className="text-4xl font-bold tracking-tight mb-4">A website that looks like you hired a whole team. You didn&apos;t.</h1>
-        <p className="text-lg text-muted-foreground mb-8">I design and build clean, usable websites for small business owners who need a professional online presence but don&apos;t have an in-house developer.</p>
+        <p className="text-lg text-muted-foreground mb-6">I design and build clean, usable websites for small business owners who need a professional online presence but don&apos;t have an in-house developer.</p>
+
+        <div className="flex flex-wrap justify-center gap-4 text-sm mb-16">
+          <a href="https://www.linkedin.com/in/abeer-zahid-1b1390322/" target="_blank" rel="noopener noreferrer" className="underline">LinkedIn</a>
+          <a href="https://github.com/AbeerZahid19" target="_blank" rel="noopener noreferrer" className="underline">GitHub</a>
+          <a href="https://drive.google.com/file/d/1IyQ0HZyVc98vHPS7m9fw2RI5T9I4hbTp/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="underline">CV</a>
+          <a href="/contact" className="underline">Book a Call</a>
+        </div>
 
         <a href="/work" className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium mb-16">See My Work</a>
 
