@@ -8,7 +8,8 @@ export default function Home() {
         <div className="flex flex-wrap justify-center gap-4 text-sm mb-16">
           <a href="https://www.linkedin.com/in/abeer-zahid-1b1390322/" target="_blank" rel="noopener noreferrer" className="underline">LinkedIn</a>
           <a href="https://github.com/AbeerZahid19" target="_blank" rel="noopener noreferrer" className="underline">GitHub</a>
-          <a href="https://drive.google.com/file/d/1IyQ0HZyVc98vHPS7m9fw2RI5T9I4hbTp/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="underline">CV</a>
+          <a href="https://drive.google.com/file/d/1p8MDyRm7Wy2dHNBo3oVrGeN5ae3lJBDR/view?usp=drive_link"
+ className="underline">CV</a>
           <a href="/contact" className="underline">Book a Call</a>
         </div>
 
