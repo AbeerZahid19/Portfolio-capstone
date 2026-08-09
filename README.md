@@ -35,3 +35,9 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 notepad README.md
+
+## Send Button — State Choreography (FE-AA1)
+
+Live demo: `/button-demo`
+
+A button component with 5 distinct states (idle, hover, loading, success, error), each transitioning via opacity + transform crossfade (300ms ease-out) — no layout-thrashing properties are animated. The loading spinner runs a continuous 700ms linear rotation. On error, a single 400ms shake plays once, then settles into a persistent red "Retry" state so the feedback isn't lost even under `prefers-reduced-motion`. The button disables itself during loading to stay interruption-safe, and has a visible keyboard focus ring.

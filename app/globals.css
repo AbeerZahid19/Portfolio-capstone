@@ -128,3 +128,35 @@
     @apply font-sans;
   }
 }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .send-btn-layer {
+    transition-duration: 0.01ms !important;
+  }
+  .send-btn-spin {
+    animation: none !important;
+  }
+  .send-btn-shake {
+    animation: none !important;
+  }
+  .send-btn-check {
+    animation: none !important;
+  }
+}
