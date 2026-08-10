@@ -1,49 +1,9 @@
- "use client";
+"use client";
 
 import { useChat } from "@ai-sdk/react";
-import { useState, useRef, useEffect } from "react";
-
-function ToolPart({ part }: { part: any }) {
-  if (part.type !== "tool-fetchMetaTags") return null;
-
-  if (part.state === "input-streaming") {
-    return (
-      <div className="text-sm text-gray-500 italic border rounded p-2 my-1">
-        Preparing to check a website...
-      </div>
-    );
-  }
-
-  if (part.state === "input-available") {
-    return (
-      <div className="text-sm text-blue-600 border rounded p-2 my-1">
-        🔍 Checking website: {part.input?.url}
-      </div>
-    );
-  }
-
-  if (part.state === "output-available") {
-    const output = part.output;
-    return (
-      <div className="border rounded-lg p-3 my-1 bg-green-50">
-        <p className="font-semibold text-sm">Website Info</p>
-        <p className="text-xs text-gray-500 break-all">{output.url}</p>
-        <p className="mt-1"><strong>Title:</strong> {output.title || "Not found"}</p>
-        <p><strong>Description:</strong> {output.description || "Not found"}</p>
-      </div>
-    );
-  }
-
-  if (part.state === "output-error") {
-    return (
-      <div className="border rounded-lg p-3 my-1 bg-red-50 text-red-700">
-        ⚠️ Couldn't check that website: {part.errorText}
-      </div>
-    );
-  }
-
-  return null;
-}
+import { useRef, useEffect, useState } from "react";
+import { ToolPart } from "@/components/ToolPart";
+import { ChatInputForm } from "@/components/ChatInputForm";
 
 function MessageSkeleton() {
   return (
@@ -84,7 +44,6 @@ function EmptyState({ onExample }: { onExample: (text: string) => void }) {
 
 export default function ChatPage() {
   const { messages, sendMessage, status, stop, error, regenerate } = useChat();
-  const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -109,15 +68,8 @@ export default function ChatPage() {
     setAutoScroll(isAtBottom);
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!input.trim()) return;
-    sendMessage({ text: input });
-    setInput("");
-  }
-
   function handleRetry() {
-    if (retrying) return; // guard against double-click
+    if (retrying) return;
     setRetrying(true);
     regenerate();
   }
@@ -197,35 +149,11 @@ export default function ChatPage() {
         </button>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex gap-2 pb-[env(safe-area-inset-bottom)]"
-      >
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 border rounded px-3 py-2"
-          disabled={isStreaming}
-        />
-        {isStreaming ? (
-          <button
-            type="button"
-            onClick={stop}
-            className="bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Stop
-          </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={!input.trim()}
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          >
-            Send
-          </button>
-        )}
-      </form>
+      <ChatInputForm
+        onSubmit={(text) => sendMessage({ text })}
+        isStreaming={isStreaming}
+        onStop={stop}
+      />
     </div>
   );
 }
