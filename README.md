@@ -1,43 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ # Portfolio Capstone — AI Chat with Website Lookup
 
-## Getting Started
+A personal portfolio site with a built-in AI chat assistant that can look up and summarize any website on request, using a real tool call rather than a static chatbot.
 
-First, run the development server:
+**Live site:** https://abeer-zahid.vercel.app
+**Chat demo:** https://abeer-zahid.vercel.app/chat
+**Button demo:** https://abeer-zahid.vercel.app/button-demo
+
+## Project Brief
+
+**What problem does it solve?** Visitors (recruiters, potential clients) often want a quick way to explore a developer's work without reading a wall of text. This project pairs a real portfolio (case studies, positioning, contact info) with an AI chat feature that can actively look things up — e.g. asking the assistant to check a website pulls back its real title and description, not a guess.
+
+**Who is it for?** Small business owners evaluating freelance frontend work, and recruiters/hiring managers reviewing an internship portfolio.
+
+**Why this idea?** It doubles as both the portfolio *and* the proof of skill — the AI chat feature is itself one of the case studies shown on the site.
+
+## Setup & Run Instructions
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/AbeerZahid19/Portfolio-capstone.git
+cd Portfolio-capstone
+npm install --legacy-peer-deps
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env.local` file with:
+GROQ_API_KEY=your_key_here
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Then run:
+```bash
+npm run dev
+```
 
-## Learn More
+Open `http://localhost:3000`.
 
-To learn more about Next.js, take a look at the following resources:
+## Architecture Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **`app/page.tsx`** — Home page: positioning, claim, links to LinkedIn/GitHub/CV/contact, featured case study.
+- **`app/work/page.tsx`**, **`app/about/page.tsx`**, **`app/contact/page.tsx`** — static content pages.
+- **`app/chat/page.tsx`** — the AI chat interface. Uses the `useChat` hook from `@ai-sdk/react` to stream messages, manage loading/error state, and render tool calls as distinct UI cards (checking / result / error).
+- **`app/button-demo/page.tsx`** — a standalone demo of a state-choreographed "Send" button (idle/loading/success/error), reused from the chat's Send button pattern.
+- **`app/api/chat/route.ts`** — server route that streams responses from the AI model and exposes the `fetchMetaTags` tool.
+- **`components/ToolPart.tsx`** — renders the tool call's lifecycle states as UI cards.
+- **`components/ChatInputForm.tsx`** — the validated chat input (disables Send on empty input, swaps to a Stop button while streaming).
+- **`app/globals.css`** — Tailwind v4 theme tokens (colors, radius) plus custom keyframes for the button demo.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## AI Integration Explained
 
-## Deploy on Vercel
+The chat route uses the **AI SDK** (`ai`, `@ai-sdk/react`, `@ai-sdk/groq`) with Groq's `llama-3.3-70b-versatile` model via `streamText`. It's given one real tool, **`fetchMetaTags`**: given a URL, it fetches the page and extracts the `<title>` and meta description. This isn't a decorative chatbot — the assistant only reports on a site's real title/description after actually calling the tool, and the UI shows every lifecycle state of that call (checking → result, or a designed error card if the fetch fails). The system prompt tells the model to use the tool whenever a user asks it to check, look up, or analyze a website.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Known Limitations & Future Improvements
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-notepad README.md
+- The chat only exposes one tool (`fetchMetaTags`); it can't yet answer questions about page content beyond title/description.
+- No persistent chat history — each page reload starts a new conversation.
+- Contact page is a `mailto:` link rather than a working contact form.
+- Only two case studies are written up on the Work page so far.
+- WAVE accessibility scan flagged one minor alert (a redundant link near the featured case card) — not yet fixed.
 
-## Send Button — State Choreography (FE-AA1)
+## Testing
 
-Live demo: `/button-demo`
+- **15 component tests** (Vitest + React Testing Library) covering:
+  - `ToolPart` — all 4 tool lifecycle states plus a null-render case (6 tests)
+  - `ChatInputForm` — validation, streaming state, Stop button (5 tests)
+  - `ChatPage` — empty state, pending/loading, streamed assistant text, and error-with-retry state, with `useChat` mocked so no real API calls are made (4 tests)
+- **1 Playwright end-to-end test** covering the primary flow: load the chat, type a message, send it, and see it appear in the conversation.
+- **CI**: GitHub Actions runs the full suite (Vitest + Playwright) on every push to `main`. See `.github/workflows/test.yml`.
 
-A button component with 5 distinct states (idle, hover, loading, success, error), each transitioning via opacity + transform crossfade (300ms ease-out) — no layout-thrashing properties are animated. The loading spinner runs a continuous 700ms linear rotation. On error, a single 400ms shake plays once, then settles into a persistent red "Retry" state so the feedback isn't lost even under `prefers-reduced-motion`. The button disables itself during loading to stay interruption-safe, and has a visible keyboard focus ring.
+## Performance & Accessibility Audit
+
+Audited with Google PageSpeed Insights (Lighthouse, mobile) and WAVE:
+
+| Check | Result |
+|---|---|
+| Lighthouse Performance | 98/100 |
+| Lighthouse Accessibility | 100/100 |
+| Lighthouse Best Practices | 100/100 |
+| Lighthouse SEO | 100/100 |
+| WAVE Accessibility | 10/10 AIM score, 0 errors, 1 alert |
+
+**Findings:** Lighthouse flagged render-blocking requests (~450ms potential savings) and some unused JavaScript (~29 KiB). WAVE flagged one redundant link near the featured case card on the home page (the case title and its "View case study" link both point to `/work`, which is slightly duplicative for screen reader users). Given the WCAG AA bar this project targets, the redundant-link alert is the more relevant fix — it's a small but real usability finding, not a performance nitpick.
+
+## Deployment & Operation
+
+- **Host:** Vercel, deployed automatically from the `main` branch via GitHub integration.
+- **Live URL:** https://abeer-zahid.vercel.app
+- **Error handling:** the chat route has designed error states for network failure, mid-stream failure, and rate limiting — each shows a distinct UI (not a crash) with a working "Retry last message" action. Route-level failures are caught by `app/chat/error.tsx`.
+- **Rollback plan:** Vercel keeps every previous deployment; if a push breaks production, use Vercel's "Instant Rollback" on the last known-good deployment while the issue is fixed on `main`.
+- **Monitoring:** relies on Vercel's built-in deployment status and CI test results on every push; no external monitoring service is wired up yet.
+
+## Reflection
+
+See `REFLECTION.md`.
