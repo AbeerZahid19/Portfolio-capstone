@@ -30,8 +30,7 @@ export default function LabPage() {
     <div className="max-w-2xl mx-auto px-6 py-16">
       <h1 className="text-3xl font-bold mb-2">3D Product Viewer</h1>
       <p className="text-muted-foreground mb-6">
-          Drag to orbit, click the shape to cycle its color. The scene is lazy-loaded so the
-        3D library only loads when you visit this page.
+          Drag to orbit, click the shape to cycle its color. 
       </p>
 
       {reducedMotion ? (
