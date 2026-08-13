@@ -19,8 +19,7 @@ function Product() {
   });
 
   function handleClick() {
-    setColorIndex((i) => (i + 1) % COLORS.length);
-    setAutoRotate(false);
+     setColorIndex((i) => (i + 1) % COLORS.length);
   }
 
   return (
