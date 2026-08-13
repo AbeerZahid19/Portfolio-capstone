@@ -90,3 +90,12 @@ Audited with Google PageSpeed Insights (Lighthouse, mobile) and WAVE:
 ## Reflection
 
 See `REFLECTION.md`.
+## 3D Product Viewer (FE-AA2)
+
+Live demo: `/lab`
+
+An interactive 3D product-viewer-style scene built with React Three Fiber and Three.js. A torus knot mesh sits in a lit scene with orbit controls; clicking the shape cycles through a fixed set of material colors and pauses the auto-rotation, going beyond simple orbiting.
+
+**Performance note:** the scene uses only primitive geometry (`torusKnotGeometry`) and a standard material — no external `.glb` model or HDRI environment map is loaded, so there's no asset download cost. The `<Canvas>` is dynamically imported via `next/dynamic` with `ssr: false`, so the Three.js/WebGL bundle is only fetched when the `/lab` page is actually visited, not on every page load. A `prefers-reduced-motion` check swaps the canvas for a static colored circle for users who've asked for reduced motion, instead of forcing the animation on them.
+
+**With more time**, I'd add a small configurator panel (material color picker, wireframe toggle, auto-rotate speed) and support loading a real `.glb` model with DRACO compression, so the viewer could show an actual project screenshot mesh rather than a placeholder shape.
