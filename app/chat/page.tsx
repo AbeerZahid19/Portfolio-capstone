@@ -84,6 +84,8 @@ export default function ChatPage() {
         ref={containerRef}
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto space-y-3 mb-4 border rounded p-3"
+        aria-live="polite"
+        aria-relevant="additions"
       >
         {messages.length === 0 && !isStreaming && (
           <EmptyState onExample={(text) => sendMessage({ text })} />
