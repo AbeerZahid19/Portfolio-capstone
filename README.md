@@ -99,3 +99,10 @@ An interactive 3D product-viewer-style scene built with React Three Fiber and Th
 **Performance note:** the scene uses only primitive geometry (`torusKnotGeometry`) and a standard material — no external `.glb` model or HDRI environment map is loaded, so there's no asset download cost. The `<Canvas>` is dynamically imported via `next/dynamic` with `ssr: false`, so the Three.js/WebGL bundle is only fetched when the `/lab` page is actually visited, not on every page load. A `prefers-reduced-motion` check swaps the canvas for a static colored circle for users who've asked for reduced motion, instead of forcing the animation on them.
 
 **With more time**, I'd add a small configurator panel (material color picker, wireframe toggle, auto-rotate speed) and support loading a real `.glb` model with DRACO compression, so the viewer could show an actual project screenshot mesh rather than a placeholder shape.
+## Signature Hero Shader (FE-AA3)
+
+Live demo: `/shader`
+
+A custom GLSL fragment shader rendered fullscreen as a hero background, built with React Three Fiber's `shaderMaterial`. Two layered sine waves (one horizontal, one vertical) drift over time using `u_time`, blended into a two-color indigo-to-violet gradient. The cursor position (`u_mouse`) bends the wave pattern and adds a soft glow near the pointer, and `u_resolution` keeps the pattern from stretching on wide screens. A cheap grain pass (based on a hashed sine noise function) is layered on top so the gradient doesn't look perfectly flat.
+
+**Perf/reduced-motion fallback:** the canvas is dynamically imported (`ssr: false`) and only mounts on the `/shader` page; `devicePixelRatio` is capped to `[1, 1.5]` via the Canvas `dpr` prop; the animation loop checks `document.hidden` every frame and skips updating uniforms when the tab isn't visible; and a `prefers-reduced-motion` media query check swaps the entire canvas for a static two-color CSS gradient with the same palette, so motion-sensitive visitors get the same look without any animation.
