@@ -106,3 +106,22 @@ Live demo: `/shader`
 A custom GLSL fragment shader rendered fullscreen as a hero background, built with React Three Fiber's `shaderMaterial`. Two layered sine waves (one horizontal, one vertical) drift over time using `u_time`, blended into a two-color indigo-to-violet gradient. The cursor position (`u_mouse`) bends the wave pattern and adds a soft glow near the pointer, and `u_resolution` keeps the pattern from stretching on wide screens. A cheap grain pass (based on a hashed sine noise function) is layered on top so the gradient doesn't look perfectly flat.
 
 **Perf/reduced-motion fallback:** the canvas is dynamically imported (`ssr: false`) and only mounts on the `/shader` page; `devicePixelRatio` is capped to `[1, 1.5]` via the Canvas `dpr` prop; the animation loop checks `document.hidden` every frame and skips updating uniforms when the tab isn't visible; and a `prefers-reduced-motion` media query check swaps the entire canvas for a static two-color CSS gradient with the same palette, so motion-sensitive visitors get the same look without any animation.
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `GROQ_API_KEY` | Yes | API key for Groq, used to run the `llama-3.3-70b-versatile` model that powers the AI chat. Get one free at [console.groq.com](https://console.groq.com). |
+
+## How AI Tools Built This
+
+I used Claude throughout this project as a build partner, not just for autocomplete. Specifics:
+
+- **Scaffolding and iteration**: Claude helped scaffold new routes/components (e.g. the chat page, the `ToolPart` and `ChatInputForm` components) from a plain-English description of what I wanted, which I then reviewed and adjusted.
+- **Debugging real errors**: when Playwright's browser kept crashing on Windows during FE-09, Claude walked me through diagnosing it (timeout config, GPU/sandbox flags) rather than giving me one guess — it took several rounds of actually reading the error output.
+- **Testing strategy**: Claude explained *why* to mock `useChat` in tests instead of calling the real API, and I wrote that explanation up myself for the "Explain It Like You Built It" assignment to confirm I actually understood it, not just copied it.
+- **What I did NOT do**: I didn't accept generated code without reading it. Every accessibility fix (aria-live region, focus states), every performance fix (removing the unused font, enabling compression), and the rate-limiting logic in this route were things I asked Claude to explain before I approved and tested them — I re-ran the relevant audit or test after each change to confirm it actually did what it claimed.
+- **Where I made the actual decisions**: the case study content, the site's positioning/claim, which failure states to design for, and the final shader palette were choices I made — Claude helped implement and refine them, not originate them.
+
+## Screenshots
+
+_See the attached before/after audit screenshots (Lighthouse, WAVE) and the `/chat`, `/lab`, and `/shader` page screenshots included in the submission._
