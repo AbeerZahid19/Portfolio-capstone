@@ -1,8 +1,8 @@
- import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-
+import { Analytics } from "@vercel/analytics/next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,7 +31,6 @@ const geistSans = Geist({
       "I design and build clean, usable websites for small business owners who need a professional online presence but don't have an in-house developer.",
   },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,6 +51,7 @@ export default function RootLayout({
           </nav>
         </header>
         <main className="flex-1">{children}</main>
+        <Analytics />
       </body>
     </html>
   );
