@@ -8,9 +8,28 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
  
-export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Frontend developer portfolio",
+ export const metadata: Metadata = {
+  title: {
+    default: "Abeer Zahid — Frontend Engineer",
+    template: "%s | Abeer Zahid",
+  },
+  description:
+    "I design and build clean, usable websites for small business owners who need a professional online presence but don't have an in-house developer. Frontend engineer building AI-assisted features I actually test before shipping.",
+  metadataBase: new URL("https://abeer-zahid.vercel.app"),
+  openGraph: {
+    title: "Abeer Zahid — Frontend Engineer",
+    description:
+      "I design and build clean, usable websites for small business owners who need a professional online presence but don't have an in-house developer.",
+    url: "https://abeer-zahid.vercel.app",
+    siteName: "Abeer Zahid",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Abeer Zahid — Frontend Engineer",
+    description:
+      "I design and build clean, usable websites for small business owners who need a professional online presence but don't have an in-house developer.",
+  },
 };
 
 export default function RootLayout({
